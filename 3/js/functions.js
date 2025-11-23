@@ -1,16 +1,16 @@
-function stringLength(str, num) {
+function checkStringLength(str, num) {
   if (str.length <= num) {
     return true;
   }
   return false;
 }
 
-stringLength('Зло – это зло, Стрегобор, – серьезно сказал ведьмак, вставая', 100);
-stringLength('Лютик, бл**ь', 12);
-stringLength('Время стирает воспоминания, искажает их', 10);
+checkStringLength('Зло – это зло, Стрегобор, – серьезно сказал ведьмак, вставая', 100);
+checkStringLength('Лютик, бл**ь', 12);
+checkStringLength('Время стирает воспоминания, искажает их', 10);
 
 
-function palindrom(myStr) {
+function isPalindrom(myStr) {
   const normalizeStr = myStr.replaceAll(' ', '').toLowerCase();
   let newStr = '';
   for (let i = normalizeStr.length - 1; i >= 0; i--) {
@@ -22,10 +22,10 @@ function palindrom(myStr) {
   return false;
 }
 
-palindrom('Топот');
-palindrom('ДовОд');
-palindrom('Кекс');
-palindrom('Лёша на полке клопа нашёл ');
+isPalindrom('Топот');
+isPalindrom('ДовОд');
+isPalindrom('Кекс');
+isPalindrom('Лёша на полке клопа нашёл ');
 
 
 function digitsFromString(mixedString) {
