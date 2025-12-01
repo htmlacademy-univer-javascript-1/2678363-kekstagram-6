@@ -1,5 +1,5 @@
 import { getRandomNumber, getRandomArrayElement } from './util.js';
-import { descriptions } from './data.js';
+import { DESCRIPTIONS } from './data.js';
 
 function createLikes() {
   return getRandomNumber(15, 200);
@@ -10,7 +10,7 @@ function createUrl(urlNum) {
 }
 
 function createDescription() {
-  return getRandomArrayElement(descriptions);
+  return getRandomArrayElement(DESCRIPTIONS);
 }
 
 export { createLikes, createUrl, createDescription };
