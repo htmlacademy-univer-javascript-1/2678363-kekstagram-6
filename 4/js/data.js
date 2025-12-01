@@ -1,4 +1,4 @@
-const message = [
+const MESSAGE = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -7,7 +7,7 @@ const message = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const names = [
+const NAMES = [
   'Саша Симпл',
   'Бивис',
   'Баттхед',
@@ -18,7 +18,7 @@ const names = [
   'Духовный наставник Лена'
 ];
 
-const descriptions = [
+const DESCRIPTIONS = [
   'Современный небоскреб',
   'Морской берег с белым песком',
   'Городской фонтан',
@@ -34,4 +34,8 @@ const descriptions = [
   'Снежный буран'
 ];
 
-export { message, names, descriptions };
+const MAX_COMMENTS_COUNT = 30;
+
+const MAX_POSTS_COUNT = 25;
+
+export { MESSAGE, NAMES, DESCRIPTIONS, MAX_COMMENTS_COUNT, MAX_POSTS_COUNT };
