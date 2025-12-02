@@ -12,10 +12,7 @@ function isMeetingTimeOk(workStart, workEnd, meeting, duration) {
   const meetingStartTime = timeToMinutes(meeting);
   const meetingEndTime = timeToMinutes(meeting) + duration;
 
-  if (workStartTime <= meetingStartTime && meetingEndTime <= workEndTime) {
-    return true;
-  }
-  return false;
+  return workStartTime <= meetingStartTime && meetingEndTime <= workEndTime;
 }
 
 isMeetingTimeOk('08:00', '17:30', '14:00', 90);
