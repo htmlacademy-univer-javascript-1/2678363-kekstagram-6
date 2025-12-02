@@ -3,7 +3,7 @@ function isMeetingTimeOk(workStart, workEnd, meeting, duration) {
   function timeToMinutes(timeString) {
     const timeArray = timeString.split(':');
     const hours = Number(timeArray[0]);
-    const minutes= Number(timeArray[1]);
+    const minutes = Number(timeArray[1]);
     return hours * 60 + minutes;
   }
 
