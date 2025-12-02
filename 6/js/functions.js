@@ -3,7 +3,7 @@ function isMeetingTimeOk(workStart, workEnd, meeting, duration) {
   function timeToMinutes(timeString) {
     const timeArray = timeString.split(':');
     const hours = Number(timeArray[0]);
-    const minutes= Number(timeArray[1]);
+    const minutes = Number(timeArray[1]);
     return hours * 60 + minutes;
   }
 
@@ -12,10 +12,7 @@ function isMeetingTimeOk(workStart, workEnd, meeting, duration) {
   const meetingStartTime = timeToMinutes(meeting);
   const meetingEndTime = timeToMinutes(meeting) + duration;
 
-  if (workStartTime <= meetingStartTime && meetingEndTime <= workEndTime) {
-    return true;
-  }
-  return false;
+  return workStartTime <= meetingStartTime && meetingEndTime <= workEndTime;
 }
 
 isMeetingTimeOk('08:00', '17:30', '14:00', 90);
