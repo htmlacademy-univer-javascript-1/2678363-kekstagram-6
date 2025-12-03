@@ -18,3 +18,5 @@ const createPosts = () => {
 };
 
 createPosts();
+
+export { objectsArray };
