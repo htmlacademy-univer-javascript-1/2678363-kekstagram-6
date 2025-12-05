@@ -1,40 +1,33 @@
-import { createLikes, createUrl, createDescription } from "./objectValues";
-import { createPosts, objectsArray } from "./main";
+import { objectsArray } from './main.js';
 
-const picturesContainer = document.querySelector(".pictures");
-const picturesTemplate = document.querySelector("#picture").content;
-const pictureImg = picturesTemplate.querySelector(".picture__img");
-const pictureLikes = picturesTemplate.querySelector(".picture__likes");
-const pictureComments = picturesTemplate.querySelector(".picture__comments");
+const createpicture = (pictureData) => {
+  const pictureTemplate = document.querySelector('#picture');
+  const picture = pictureTemplate.content.querySelector('.picture').cloneNode(true);
 
-const createPictures = function() {
-  pictureImg.src = objectsArray.url;
-  pictureImg.alt = objectsArray.description;
-  pictureLikes.textContent = createDescription();
-  pictureComments.textContent =
+  const image = picture.querySelector('.picture__img');
+  const likesElement = picture.querySelector('.picture__likes');
+  const commentsElement = picture.querySelector('.picture__comments');
+
+  image.src = pictureData.url;
+  image.alt = pictureData.description;
+  likesElement.textContent = pictureData.likes;
+
+  const commentsCount = pictureData.comments ? pictureData.comments.length : 0;
+  commentsElement.textContent = commentsCount;
+
+  return picture;
 };
 
-createPictures();
+const renderPictures = () => {
+  const picturesContainer = document.querySelector('.pictures');
+  const fragment = new DocumentFragment();
 
+  objectsArray.forEach((pictureData) => {
+    const pictureItem = createpicture(pictureData);
+    fragment.appendChild(pictureItem);
+  });
 
-// const createPicture = function() {
-//   url: ;
-//   description: ;
-//   likes: ;
-//   comments: ;
-// }
+  picturesContainer.appendChild(fragment);
+};
 
-// const fragment = new DocumentFragment();
-
-// similarPictures.forEach((url, description, likes, comments) => {
-//   const pictureElement = picturesTemplate.cloneNode(true);
-//   pictureElement.querySelector('.')
-// });
-
-// similarWizards.forEach(({name, coatColor, eyesColor}) => {
-//   const wizardElement = similarWizardTemplate.cloneNode(true);
-//   wizardElement.querySelector('.setup-similar-label').textContent = name;
-//   wizardElement.querySelector('.wizard-coat').style.fill = coatColor;
-//   wizardElement.querySelector('.wizard-eyes').style.fill = eyesColor;
-//   similarListFragment.appendChild(wizardElement);
-// });
+export { renderPictures };

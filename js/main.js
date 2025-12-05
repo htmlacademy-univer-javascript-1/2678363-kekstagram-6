@@ -1,6 +1,7 @@
 import { createComments } from './comments.js';
 import { createUrl, createDescription, createLikes } from './objectValues.js';
 import { MAX_POSTS_COUNT } from './data.js';
+import { renderPictures } from './pictures.js';
 
 const objectsArray = [];
 
@@ -18,5 +19,6 @@ const createPosts = () => {
 };
 
 createPosts();
+renderPictures();
 
 export { objectsArray };
