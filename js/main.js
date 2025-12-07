@@ -3,11 +3,11 @@ import { createUrl, createDescription, createLikes } from './objectValues.js';
 import { MAX_POSTS_COUNT } from './data.js';
 import { renderPictures } from './pictures.js';
 
-const objectsArray = [];
+const userPosts = [];
 
 const createPosts = () => {
   for (let i = 1; i <= MAX_POSTS_COUNT; i++) {
-    objectsArray.push({
+    userPosts.push({
       id: i,
       url: createUrl(i),
       description: createDescription(),
@@ -15,10 +15,10 @@ const createPosts = () => {
       comments: createComments()
     });
   }
-  return objectsArray;
+  return userPosts;
 };
 
 createPosts();
 renderPictures();
 
-export { objectsArray };
+export { userPosts };
