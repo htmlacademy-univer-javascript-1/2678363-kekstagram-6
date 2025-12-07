@@ -1,6 +1,6 @@
-import { objectsArray } from './main.js';
+import { userPosts } from './main.js';
 
-const createpicture = (pictureData) => {
+const createPicture = (pictureData) => {
   const pictureTemplate = document.querySelector('#picture');
   const picture = pictureTemplate.content.querySelector('.picture').cloneNode(true);
 
@@ -22,8 +22,8 @@ const renderPictures = () => {
   const picturesContainer = document.querySelector('.pictures');
   const fragment = new DocumentFragment();
 
-  objectsArray.forEach((pictureData) => {
-    const pictureItem = createpicture(pictureData);
+  userPosts.forEach((pictureData) => {
+    const pictureItem = createPicture(pictureData);
     fragment.appendChild(pictureItem);
   });
 
