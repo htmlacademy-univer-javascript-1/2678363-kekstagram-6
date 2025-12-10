@@ -1,4 +1,5 @@
 import { userPosts } from './main.js';
+import { showPost } from './posts-modal.js';
 
 const createPicture = (pictureData) => {
   const pictureTemplate = document.querySelector('#picture');
@@ -14,6 +15,11 @@ const createPicture = (pictureData) => {
 
   const commentsCount = pictureData.comments ? pictureData.comments.length : 0;
   commentsElement.textContent = commentsCount;
+
+  picture.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    showPost(pictureData);
+  });
 
   return picture;
 };
