@@ -1,3 +1,5 @@
+import { COMMENTS_PER_PAGE } from "./data.js";
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImage = bigPicture.querySelector('img');
 const likesCount = bigPicture.querySelector('.likes-count');
@@ -8,6 +10,14 @@ const socialCaption = bigPicture.querySelector('.social__caption');
 const commentsCountBlock = bigPicture.querySelector('.social__comment-count');
 const commentsLoaderButton = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('#picture-cancel');
+
+const currentComments = [1, 2, 3, 4];
+let commentsShown = 0;
+
+const showMoreComments = () => {
+  commentsCountBlock.textContent = `${commentsShown} + из ${currentComments.length}`;
+}
+console.log(showMoreComments());
 
 const createComment = (comment) => {
   const commentsItem = document.createElement('li');
