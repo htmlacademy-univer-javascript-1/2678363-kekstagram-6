@@ -76,10 +76,20 @@ const onOverlayClick = (evt) => {
   }
 };
 
+let isInitialized = false;
+
 const initializePost = () => {
+  if (isInitialized) {
+    document.removeEventListener('keydown', onEscapeClick);
+    bigPicture.removeEventListener('click', onOverlayClick);
+    closeButton.removeEventListener('click', closePost);
+  }
+
   document.addEventListener('keydown', onEscapeClick);
   bigPicture.addEventListener('click', onOverlayClick);
   closeButton.addEventListener('click', closePost);
+
+  isInitialized = true;
 };
 
 export { showPost, initializePost };
