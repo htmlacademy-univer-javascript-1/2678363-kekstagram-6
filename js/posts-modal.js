@@ -15,8 +15,7 @@ let currentComments = [];
 let commentsShown = 0;
 
 const updateCommentsCounter = () => {
-  commentsCountBlock.textContent = `${commentsShown} из ${currentComments.length} комментариев`;
-
+  commentsCountBlock.innerHTML = `${commentsShown} из <span class="likes-count">${currentComments.length}</span> комментариев`;
 };
 
 const createComment = (comment) => {
