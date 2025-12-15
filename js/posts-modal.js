@@ -1,5 +1,4 @@
 import { COMMENTS_PER_PAGE } from './data.js';
-import { isEscapeKey } from './util.js';
 
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImage = bigPicture.querySelector('img');
@@ -92,7 +91,7 @@ const onCommentsLoaderClick = () => {
 };
 
 const onEscapeClick = (evt) => {
-  if (isEscapeKey && !bigPicture.classList.contains('hidden')) {
+  if (evt.key === 'Escape' && !bigPicture.classList.contains('hidden')) {
     evt.preventDefault();
     closePost();
   }

@@ -6,6 +6,4 @@ function getRandomArrayElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
-
-export { getRandomArrayElement, getRandomNumber, isEscapeKey };
+export { getRandomArrayElement, getRandomNumber };
