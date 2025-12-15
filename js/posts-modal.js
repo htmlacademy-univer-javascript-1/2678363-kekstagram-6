@@ -16,7 +16,7 @@ let currentComments = [];
 let commentsShown = 0;
 
 const updateCommentsCounter = () => {
-  commentsCountBlock.innerHTML = `${commentsShown} из <span class="likes-count">${currentComments.length}</span> комментариев`;
+  commentsCountBlock.innerHTML = `${commentsShown} из <span class="comments-count">${currentComments.length}</span> комментариев`;
 };
 
 const createComment = (comment) => {
@@ -76,7 +76,7 @@ const showPost = (pictureData) => {
   bigPicture.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  if (currentComments.length >= 0 ) {
+  if (currentComments.length >= 0) {
     renderComments();
   }
 
