@@ -17,6 +17,9 @@ let commentsShown = 0;
 
 const updateCommentsCounter = () => {
   commentsCountBlock.innerHTML = `${commentsShown} из <span class="comments-count">${currentComments.length}</span> комментариев`;
+  if (commentsShown === 0) {
+    commentsCountBlock.innerHTML = 'Нет комментариев';
+  }
 };
 
 const createComment = (comment) => {
