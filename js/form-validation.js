@@ -3,12 +3,13 @@ import { MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, REGEXP } fr
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFile = document.querySelector('#upload-file');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
-const uploadCancel = document.querySelector('#upload-cancel');
+const uploadCancelBtn = document.querySelector('#upload-cancel');
 const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
 const submitButton = uploadForm.querySelector('#upload-submit');
 
 let isFormOpen = false;
+let isInputActive = false;
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -83,15 +84,15 @@ pristine.addValidator(
   hashtagsInput,
   validateHashtagFormat,
   'Хэштег должен начинаться с # и содержать только буквы и цифры',
-  2,
+  1,
   false
 );
 
 pristine.addValidator(
   hashtagsInput,
   validateHashtagLength,
-  `Максимальная длина хэштега: ${MAX_HASHTAG_LENGTH} символов`,
-  3,
+  `Максимальная длина хэштега - ${MAX_HASHTAG_LENGTH} символов`,
+  2,
   false
 );
 
@@ -99,7 +100,7 @@ pristine.addValidator(
   hashtagsInput,
   validateHashtagCount,
   `Нельзя указать больше ${MAX_HASHTAGS_COUNT} хэштегов`,
-  1,
+  3,
   false
 );
 
@@ -123,7 +124,7 @@ uploadFile.addEventListener('change', () => {
   toggleForm(true);
 });
 
-uploadCancel.addEventListener('click', () => {
+uploadCancelBtn.addEventListener('click', () => {
   toggleForm(false);
 });
 
@@ -134,7 +135,19 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
+hashtagsInput.addEventListener('click', () => {
+  isInputActive.toggle(true);
+});
+
+const onInputKeydown = (evt) => {
+  if (evt.key === 'Escape' && !isInputActive) {
+    evt.preventDefault();
+    toggleForm(false);
+  }
+};
+
 document.addEventListener('keydown', onDocumentKeydown);
+document.addEventListener('keydown', onInputKeydown);
 
 const blockSubmitButton = () => {
   submitButton.disabled = true;
