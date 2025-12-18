@@ -1,9 +1,9 @@
-import { MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, REGEXP } from './data.js';
+import { MAX_HASHTAGS_COUNT, MAX_COMMENT_LENGTH, REGEXP } from './data.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFile = document.querySelector('#upload-file');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
-const uploadCancel = document.querySelector('#upload-cancel');
+const closeButton = document.querySelector('#upload-cancel');
 const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
 const submitButton = uploadForm.querySelector('#upload-submit');
@@ -19,51 +19,25 @@ const pristine = new Pristine(uploadForm, {
   errorTextClass: 'form__error-text'
 });
 
-const resetForm = () => {
-  uploadForm.reset();
-  uploadFile.value = '';
-  pristine.reset();
-};
-
-const toggleForm = (show) => {
-  if (show) {
-    uploadOverlay.classList.remove('hidden');
-    document.body.classList.add('modal-open');
-    isFormOpen = true;
-  } else {
-    uploadOverlay.classList.add('hidden');
-    document.body.classList.remove('modal-open');
-    isFormOpen = false;
-    resetForm();
-  }
-};
-
-const normalizeHashtags = (hashtagsString) => hashtagsString
+const normalizeHashtags = (value) => value
   .trim()
-  .toLowerCase()
-  .split(' ')
-  .filter((tag) => tag.length > 0);
+  .split(/\s+/)
+  .filter((hashtag) => hashtag.length > 0);
 
 const validateHashtagFormat = (value) => {
   if (!value.trim()) {
     return true;
   }
+
   const hashtags = normalizeHashtags(value);
   return hashtags.every((hashtag) => REGEXP.test(hashtag));
-};
-
-const validateHashtagLength = (value) => {
-  if (!value.trim()) {
-    return true;
-  }
-  const hashtags = normalizeHashtags(value);
-  return hashtags.every((hashtag) => hashtag.length <= MAX_HASHTAG_LENGTH);
 };
 
 const validateHashtagCount = (value) => {
   if (!value.trim()) {
     return true;
   }
+
   const hashtags = normalizeHashtags(value);
   return hashtags.length <= MAX_HASHTAGS_COUNT;
 };
@@ -72,9 +46,10 @@ const validateUniqueHashtag = (value) => {
   if (!value.trim()) {
     return true;
   }
-  const hashtags = normalizeHashtags(value);
-  const uniqueHashtags = new Set(hashtags);
-  return hashtags.length === uniqueHashtags.size;
+
+  const hashtags = normalizeHashtags(value).map((hashtag) => hashtag.toLowerCase());
+  const uniqueTags = [...new Set(hashtags)];
+  return hashtags.length === uniqueTags.length;
 };
 
 const validateCommentLength = (value) => value.length <= MAX_COMMENT_LENGTH;
@@ -82,23 +57,15 @@ const validateCommentLength = (value) => value.length <= MAX_COMMENT_LENGTH;
 pristine.addValidator(
   hashtagsInput,
   validateHashtagFormat,
-  'Хэштег должен начинаться с # и содержать только буквы и цифры',
+  'Введён невалидный хэш-тег',
   2,
-  false
-);
-
-pristine.addValidator(
-  hashtagsInput,
-  validateHashtagLength,
-  `Максимальная длина хэштега: ${MAX_HASHTAG_LENGTH} символов`,
-  3,
-  false
+  true
 );
 
 pristine.addValidator(
   hashtagsInput,
   validateHashtagCount,
-  `Нельзя указать больше ${MAX_HASHTAGS_COUNT} хэштегов`,
+  'Превышено количество хэш-тегов',
   1,
   false
 );
@@ -119,16 +86,37 @@ pristine.addValidator(
   false
 );
 
+const resetForm = () => {
+  uploadForm.reset();
+  uploadFile.value = '';
+  pristine.reset();
+};
+
+const toggleForm = (show) => {
+  if (show) {
+    uploadOverlay.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    isFormOpen = true;
+  } else {
+    uploadOverlay.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    isFormOpen = false;
+    resetForm();
+  }
+};
+
 uploadFile.addEventListener('change', () => {
   toggleForm(true);
 });
 
-uploadCancel.addEventListener('click', () => {
+closeButton.addEventListener('click', () => {
   toggleForm(false);
 });
 
 const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape' && isFormOpen) {
+  const isTextFieldFocused = document.activeElement === hashtagsInput || document.activeElement === commentInput;
+
+  if (evt.key === 'Escape' && isFormOpen && !isTextFieldFocused) {
     evt.preventDefault();
     toggleForm(false);
   }
@@ -154,11 +142,11 @@ uploadForm.addEventListener('submit', (evt) => {
     blockSubmitButton();
 
     uploadForm.submit();
-
-    setTimeout(() => {
-      unblockSubmitButton();
-    }, 3000);
   }
+
+  setTimeout(() => {
+    unblockSubmitButton();
+  }, 3000);
 });
 
 export { toggleForm, resetForm, pristine };
