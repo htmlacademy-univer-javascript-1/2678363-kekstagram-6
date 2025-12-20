@@ -1,4 +1,4 @@
-import { userPosts } from './main.js';
+import { userPosts } from './create-posts.js';
 import { showPost } from './posts-modal.js';
 
 const createPicture = (pictureData) => {
