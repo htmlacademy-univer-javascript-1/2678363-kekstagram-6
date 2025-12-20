@@ -1,12 +1,10 @@
-import { createPosts } from './create-posts.js';
-import { renderPictures } from './pictures.js';
-import { initializePost } from './posts-modal.js';
 import './form-validation.js';
-import { getPosts } from './server-interaction.js';
+import { getPosts } from './api.js';
+import { showAlert } from './util.js';
+import { renderPictures } from './pictures.js';
+import { initializePost } from './post-modal.js';
 
-createPosts();
-renderPictures();
 initializePost();
-getPosts();
-
-
+getPosts()
+  .then((posts) => renderPictures(posts))
+  .catch((error) => showAlert(error.message));

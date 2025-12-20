@@ -1,5 +1,4 @@
-import { userPosts } from './create-posts.js';
-import { showPost } from './posts-modal.js';
+import { showPost } from './post-modal.js';
 
 const createPicture = (pictureData) => {
   const pictureTemplate = document.querySelector('#picture');
@@ -24,11 +23,11 @@ const createPicture = (pictureData) => {
   return picture;
 };
 
-const renderPictures = () => {
+const renderPictures = (posts) => {
   const picturesContainer = document.querySelector('.pictures');
   const fragment = new DocumentFragment();
 
-  userPosts.forEach((pictureData) => {
+  posts.forEach((pictureData) => {
     const pictureItem = createPicture(pictureData);
     fragment.appendChild(pictureItem);
   });

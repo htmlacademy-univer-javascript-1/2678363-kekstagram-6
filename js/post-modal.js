@@ -93,7 +93,7 @@ const onCommentsLoaderClick = () => {
   renderComments();
 };
 
-const onEscapeClick = (evt) => {
+const onEscapeKeydown = (evt) => {
   if (evt.key === 'Escape' && !bigPicture.classList.contains('hidden')) {
     evt.preventDefault();
     closePost();
@@ -110,13 +110,13 @@ let isInitialized = false;
 
 const initializePost = () => {
   if (isInitialized) {
-    document.removeEventListener('keydown', onEscapeClick);
+    document.removeEventListener('keydown', onEscapeKeydown);
     bigPicture.removeEventListener('click', onOverlayClick);
     closeButton.removeEventListener('click', closePost);
     commentsLoaderButton.removeEventListener('click', onCommentsLoaderClick);
   }
 
-  document.addEventListener('keydown', onEscapeClick);
+  document.addEventListener('keydown', onEscapeKeydown);
   bigPicture.addEventListener('click', onOverlayClick);
   closeButton.addEventListener('click', closePost);
   commentsLoaderButton.addEventListener('click', onCommentsLoaderClick);
