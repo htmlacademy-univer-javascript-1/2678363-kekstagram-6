@@ -59,7 +59,7 @@ pristine.addValidator(
   hashtagsInput,
   validateHashtagFormat,
   'Введён невалидный хэш-тег',
-  0,
+  1,
   true
 );
 
@@ -67,7 +67,7 @@ pristine.addValidator(
   hashtagsInput,
   validateUniqueHashtag,
   'Хэштеги не должны повторяться',
-  1,
+  2,
   false
 );
 
@@ -75,7 +75,7 @@ pristine.addValidator(
   hashtagsInput,
   validateHashtagCount,
   'Превышено количество хэш-тегов',
-  2,
+  3,
   false
 );
 
@@ -83,7 +83,7 @@ pristine.addValidator(
   commentInput,
   validateCommentLength,
   `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов`,
-  0,
+  1,
   false
 );
 
