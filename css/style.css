@@ -1395,3 +1395,15 @@ main {
 .hidden {
   display: none;
 }
+
+/* Валидаторы */
+.form__error-text {
+  display: flex;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+  width: 450px;
+  color: red;
+  text-transform: none !important;
+  margin: 0 auto 20px;
+}
