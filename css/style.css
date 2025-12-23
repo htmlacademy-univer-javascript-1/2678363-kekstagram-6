@@ -1396,7 +1396,6 @@ main {
   display: none;
 }
 
-/* Валидаторы */
 .form__error-text {
   display: flex;
   font-size: 14px;
@@ -1406,4 +1405,21 @@ main {
   color: red;
   text-transform: none !important;
   margin: 0 auto 20px;
+}
+
+.error {
+  z-index: 100;
+}
+
+.alert {
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 10px 3px;
+  font-size: 30px;
+  line-height: 30px;
+  text-align: center;
+  position: absolute;
+  background-color: red;
+  z-index: 100;
 }
