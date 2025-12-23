@@ -111,8 +111,8 @@ const resetForm = () => {
   }
 };
 
-const toggleForm = (show) => {
-  if (show) {
+const toggleForm = (isShown) => {
+  if (isShown) {
     uploadOverlay.classList.remove('hidden');
     document.body.classList.add('modal-open');
     isFormOpen = true;
@@ -170,18 +170,38 @@ uploadForm.addEventListener('submit', async (evt) => {
 
     const successTemplate = document.querySelector('#success');
     const successElement = successTemplate.content.cloneNode(true).children[0];
+    const successInner = successElement.querySelector('.success__inner');
     const successButton = successElement.querySelector('.success__button');
 
-    toggleForm(false);
-    successButton.addEventListener('click', () => {
+    const removeSuccess = () => {
       successElement.remove();
-    });
+    };
+
+    const onEscapeKeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        removeSuccess();
+      }
+    };
+
+    const onOverlayClick = (e) => {
+      if (!successInner.contains(e.target)) {
+        removeSuccess();
+      }
+    };
+
+    successButton.addEventListener('click', removeSuccess);
+    document.addEventListener('keydown', onEscapeKeydown);
+    document.addEventListener('click', onOverlayClick);
 
     document.body.appendChild(successElement);
+
+    toggleForm(false);
+
   } catch (error) {
+
     const errorTemplate = document.querySelector('#error');
     const errorElement = errorTemplate.content.cloneNode(true).children[0];
-    errorElement.style.zIndex = 100;
 
     const originalKeydownHandler = onDocumentKeydown;
     document.removeEventListener('keydown', originalKeydownHandler);
@@ -202,9 +222,7 @@ uploadForm.addEventListener('submit', async (evt) => {
     };
 
     removeError = () => {
-      if (errorElement.parentNode) {
-        errorElement.remove();
-      }
+      errorElement.remove();
 
       document.addEventListener('keydown', originalKeydownHandler);
       document.removeEventListener('keydown', onEscapeKeydown);
