@@ -1,4 +1,8 @@
-import { ALERT_SHOW_TIME } from './data.js';
+import { ALERT_SHOW_TIME, MAX_UNIQUE_PICTURES } from './data.js';
+
+const randomArrayElements = (array, count) => {
+
+}
 
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
@@ -12,4 +16,4 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export { showAlert };
+export { showAlert, randomArrayElements };
