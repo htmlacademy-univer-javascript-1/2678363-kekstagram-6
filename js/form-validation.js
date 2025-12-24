@@ -173,9 +173,7 @@ uploadForm.addEventListener('submit', async (evt) => {
     const successInner = successElement.querySelector('.success__inner');
     const successButton = successElement.querySelector('.success__button');
 
-    const removeSuccess = () => {
-      successElement.remove();
-    };
+    let removeSuccess = function() {};
 
     const onEscapeKeydown = (e) => {
       if (e.key === 'Escape') {
@@ -188,6 +186,13 @@ uploadForm.addEventListener('submit', async (evt) => {
       if (!successInner.contains(e.target)) {
         removeSuccess();
       }
+    };
+
+    removeSuccess = () => {
+      successElement.remove();
+
+      document.removeEventListener('keydown', onEscapeKeydown);
+      document.removeEventListener('click', onOverlayClick);
     };
 
     successButton.addEventListener('click', removeSuccess);
