@@ -1,4 +1,5 @@
 import { MAX_HASHTAGS_COUNT, MAX_COMMENT_LENGTH, REGEXP } from './data.js';
+import { sendPosts } from './api.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFile = document.querySelector('#upload-file');
@@ -90,10 +91,28 @@ const resetForm = () => {
   uploadForm.reset();
   uploadFile.value = '';
   pristine.reset();
+
+  const scaleValueInput = uploadOverlay.querySelector('.scale__control--value');
+  scaleValueInput.value = '100%';
+
+  const previewImg = uploadOverlay.querySelector('.img-upload__preview img');
+  previewImg.src = 'img/upload-default-image.jpg';
+  previewImg.style.transform = 'scale(1)';
+  previewImg.style.filter = '';
+
+  const originalEffectRadio = uploadOverlay.querySelector('#effect-none');
+  if (originalEffectRadio) {
+    originalEffectRadio.checked = true;
+  }
+
+  const effectLevelContainer = uploadOverlay.querySelector('.img-upload__effect-level');
+  if (effectLevelContainer) {
+    effectLevelContainer.classList.add('hidden');
+  }
 };
 
-const toggleForm = (show) => {
-  if (show) {
+const toggleForm = (isShown) => {
+  if (isShown) {
     uploadOverlay.classList.remove('hidden');
     document.body.classList.add('modal-open');
     isFormOpen = true;
@@ -134,19 +153,100 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
-uploadForm.addEventListener('submit', (evt) => {
+uploadForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
 
-  if (isValid) {
-    blockSubmitButton();
-
-    uploadForm.submit();
+  if (!isValid) {
+    return;
   }
 
-  setTimeout(() => {
+  blockSubmitButton();
+
+  const formData = new FormData(uploadForm);
+
+  try {
+    await sendPosts(formData);
+
+    const successTemplate = document.querySelector('#success');
+    const successElement = successTemplate.content.cloneNode(true).children[0];
+    const successInner = successElement.querySelector('.success__inner');
+    const successButton = successElement.querySelector('.success__button');
+
+    let removeSuccess = function() {};
+
+    const onEscapeKeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        removeSuccess();
+      }
+    };
+
+    const onOverlayClick = (e) => {
+      if (!successInner.contains(e.target)) {
+        removeSuccess();
+      }
+    };
+
+    removeSuccess = () => {
+      successElement.remove();
+
+      document.removeEventListener('keydown', onEscapeKeydown);
+      document.removeEventListener('click', onOverlayClick);
+    };
+
+    successButton.addEventListener('click', removeSuccess);
+    document.addEventListener('keydown', onEscapeKeydown);
+    document.addEventListener('click', onOverlayClick);
+
+    document.body.appendChild(successElement);
+
+    toggleForm(false);
+
+  } catch (error) {
+
+    const errorTemplate = document.querySelector('#error');
+    const errorElement = errorTemplate.content.cloneNode(true).children[0];
+
+    const originalKeydownHandler = onDocumentKeydown;
+    document.removeEventListener('keydown', originalKeydownHandler);
+
+    let removeError = function () { };
+
+    const onEscapeKeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        removeError();
+      }
+    };
+
+    const onOverlayClick = (e) => {
+      if (e.target === errorElement) {
+        removeError();
+      }
+    };
+
+    removeError = () => {
+      errorElement.remove();
+
+      document.addEventListener('keydown', originalKeydownHandler);
+      document.removeEventListener('keydown', onEscapeKeydown);
+      errorElement.removeEventListener('click', onOverlayClick);
+    };
+
+    const retryButton = errorElement.querySelector('.error__button');
+    retryButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeError();
+    });
+
+    document.addEventListener('keydown', onEscapeKeydown);
+    errorElement.addEventListener('click', onOverlayClick);
+
+    document.body.appendChild(errorElement);
+  } finally {
     unblockSubmitButton();
-  }, 3000);
+  }
 });
 
 export { toggleForm, resetForm, pristine };

@@ -1,9 +1,15 @@
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+import { ALERT_SHOW_TIME } from './data.js';
 
-function getRandomArrayElement(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.classList.add('alert');
+  alertContainer.textContent = message;
 
-export { getRandomArrayElement, getRandomNumber };
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export { showAlert };
