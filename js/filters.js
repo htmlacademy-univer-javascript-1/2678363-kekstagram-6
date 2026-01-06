@@ -1,4 +1,5 @@
 import { MAX_UNIQUE_PICTURES, RERENDER_DELAY } from './data.js';
+import { renderPictures } from './pictures.js';
 
 const FILTERS = {
   DEFAULT: 'filter-default',
@@ -6,17 +7,7 @@ const FILTERS = {
   DISCUSSED: 'filter-discussed'
 };
 
-let currentPosts = [];
-let currentFilter = FILTERS.DEFAULT;
 const filtersContainer = document.querySelector('.img-filters');
-
-function debounce (callback, timeoutDelay) {
-  let timeoutId;
-  return (...rest) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
-  };
-}
 
 const filterButtons = {
   default: document.querySelector(`#${FILTERS.DEFAULT}`),
@@ -24,32 +15,43 @@ const filterButtons = {
   discussed: document.querySelector(`#${FILTERS.DISCUSSED}`)
 };
 
-function shufflePosts(posts) {
-  const shuffled = [...posts].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, MAX_UNIQUE_PICTURES);
+let currentPosts = [];
+
+function debounce(callback, timeoutDelay) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
 }
 
 const getFilteredPosts = (posts, filter) => {
   switch (filter) {
-    case FILTERS.DEFAULT:
-      return [...posts].slice();
     case FILTERS.RANDOM:
-      return shufflePosts([...posts]);
+      return [...posts].sort(() => 0.5 - Math.random()).slice(0, MAX_UNIQUE_PICTURES);
     case FILTERS.DISCUSSED:
-      return [...posts].sort((a, b) => a.comments.count - b.comments.count);
+      return [...posts].sort((a, b) => b.comments.length - a.comments.length);
+    default:
+      return [...posts];
   }
 };
 
-const renderFilteredPosts = (filter) => {
+const renderFilteredPosts = debounce((filter) => {
   const filteredPosts = getFilteredPosts(currentPosts, filter);
-  const picturesContainer = document.querySelector('.pictures');
-  picturesContainer.innerHTML = '';
-
-};
+  renderPictures(filteredPosts);
+}, RERENDER_DELAY);
 
 const onFilterClick = (filter) => {
-  currentFilter = filter;
+  Object.values(filterButtons).forEach((button) => {
+    button.classList.remove('img-filters__button--active');
+  });
 
+  const buttonName = Object.keys(FILTERS).find((key) => FILTERS[key] === filter);
+  if (buttonName && filterButtons[buttonName]) {
+    filterButtons[buttonName].classList.add('img-filters__button--active');
+  }
+
+  renderFilteredPosts(filter);
 };
 
 const initializeFilters = (posts) => {
@@ -63,4 +65,3 @@ const initializeFilters = (posts) => {
 };
 
 export { initializeFilters };
-

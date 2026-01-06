@@ -25,14 +25,22 @@ const createPicture = (pictureData) => {
 
 const renderPictures = (posts) => {
   const picturesContainer = document.querySelector('.pictures');
-  const fragment = new DocumentFragment();
 
+  const existingPictures = picturesContainer.querySelectorAll('.picture');
+  existingPictures.forEach((picture) => picture.remove());
+
+  const fragment = new DocumentFragment();
   posts.forEach((pictureData) => {
     const pictureItem = createPicture(pictureData);
     fragment.appendChild(pictureItem);
   });
 
-  picturesContainer.appendChild(fragment);
+  const imgUploadSection = picturesContainer.querySelector('.img-upload');
+  if (imgUploadSection) {
+    picturesContainer.insertBefore(fragment, imgUploadSection);
+  } else {
+    picturesContainer.appendChild(fragment);
+  }
 };
 
 export { renderPictures };
