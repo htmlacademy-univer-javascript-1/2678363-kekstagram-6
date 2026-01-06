@@ -25,8 +25,10 @@ const createPicture = (pictureData) => {
 
 const renderPictures = (posts) => {
   const picturesContainer = document.querySelector('.pictures');
-  const fragment = new DocumentFragment();
 
+  picturesContainer.querySelectorAll('.picture').forEach((el) => el.remove());
+
+  const fragment = new DocumentFragment();
   posts.forEach((pictureData) => {
     const pictureItem = createPicture(pictureData);
     fragment.appendChild(pictureItem);
