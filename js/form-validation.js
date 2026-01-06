@@ -1,5 +1,7 @@
 import { MAX_HASHTAGS_COUNT, MAX_COMMENT_LENGTH, REGEXP } from './data.js';
 import { sendPosts } from './api.js';
+import { initializeImageScale } from './image-scale.js';
+import { initializeImageEffects } from './image-effects.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFile = document.querySelector('#upload-file');
@@ -8,8 +10,12 @@ const closeButton = document.querySelector('#upload-cancel');
 const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
 const submitButton = uploadForm.querySelector('#upload-submit');
+const previewImg = uploadOverlay.querySelector('.img-upload__preview img');
+const scaleValueInput = uploadOverlay.querySelector('.scale__control--value');
 
 let isFormOpen = false;
+let scaleModule;
+let effectsModule;
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -87,18 +93,26 @@ pristine.addValidator(
   false
 );
 
+let currentImageURL = null;
+
 const resetForm = () => {
   uploadForm.reset();
   uploadFile.value = '';
   pristine.reset();
 
-  const scaleValueInput = uploadOverlay.querySelector('.scale__control--value');
-  scaleValueInput.value = '100%';
+  if (currentImageURL) {
+    URL.revokeObjectURL(currentImageURL);
+    currentImageURL = null;
+  }
 
-  const previewImg = uploadOverlay.querySelector('.img-upload__preview img');
+  if (scaleModule) {
+    scaleModule.resetScale();
+  }
+  if (effectsModule) {
+    effectsModule.resetEffects();
+  }
+
   previewImg.src = 'img/upload-default-image.jpg';
-  previewImg.style.transform = 'scale(1)';
-  previewImg.style.filter = '';
 
   const originalEffectRadio = uploadOverlay.querySelector('#effect-none');
   if (originalEffectRadio) {
@@ -124,8 +138,27 @@ const toggleForm = (isShown) => {
   }
 };
 
-uploadFile.addEventListener('change', () => {
-  toggleForm(true);
+uploadFile.addEventListener('change', (evt) => {
+  const file = evt.target.files[0];
+  if (file) {
+    if (currentImageURL) {
+      URL.revokeObjectURL(currentImageURL);
+    }
+    currentImageURL = URL.createObjectURL(file);
+    previewImg.src = currentImageURL;
+
+    if (!scaleModule) {
+      scaleModule = initializeImageScale(previewImg, scaleValueInput);
+    }
+    if (!effectsModule) {
+      effectsModule = initializeImageEffects(previewImg);
+    }
+
+    scaleModule.resetScale();
+    effectsModule.resetEffects();
+
+    toggleForm(true);
+  }
 });
 
 closeButton.addEventListener('click', () => {
@@ -173,7 +206,7 @@ uploadForm.addEventListener('submit', async (evt) => {
     const successInner = successElement.querySelector('.success__inner');
     const successButton = successElement.querySelector('.success__button');
 
-    let removeSuccess = function() {};
+    let removeSuccess = function () { };
 
     const onEscapeKeydown = (e) => {
       if (e.key === 'Escape') {
@@ -231,7 +264,7 @@ uploadForm.addEventListener('submit', async (evt) => {
 
       document.addEventListener('keydown', originalKeydownHandler);
       document.removeEventListener('keydown', onEscapeKeydown);
-      errorElement.removeEventListener('click', onOverlayClick);
+      document.removeEventListener('click', onOverlayClick);
     };
 
     const retryButton = errorElement.querySelector('.error__button');
@@ -241,7 +274,7 @@ uploadForm.addEventListener('submit', async (evt) => {
     });
 
     document.addEventListener('keydown', onEscapeKeydown);
-    errorElement.addEventListener('click', onOverlayClick);
+    document.addEventListener('click', onOverlayClick);
 
     document.body.appendChild(errorElement);
   } finally {

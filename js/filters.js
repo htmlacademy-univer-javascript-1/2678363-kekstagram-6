@@ -1,5 +1,6 @@
 import { MAX_UNIQUE_PICTURES, RERENDER_DELAY } from './data.js';
 import { renderPictures } from './pictures.js';
+import { debounce } from './util.js';
 
 const FILTERS = {
   DEFAULT: 'filter-default',
@@ -16,14 +17,6 @@ const filterButtons = {
 };
 
 let currentPosts = [];
-
-function debounce(callback, timeoutDelay) {
-  let timeoutId;
-  return (...rest) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
-  };
-}
 
 const getFilteredPosts = (posts, filter) => {
   switch (filter) {
@@ -46,9 +39,9 @@ const onFilterClick = (filter) => {
     button.classList.remove('img-filters__button--active');
   });
 
-  const buttonName = Object.keys(FILTERS).find((key) => FILTERS[key] === filter);
-  if (buttonName && filterButtons[buttonName]) {
-    filterButtons[buttonName].classList.add('img-filters__button--active');
+  const activeButton = document.querySelector(`#${filter}`);
+  if (activeButton) {
+    activeButton.classList.add('img-filters__button--active');
   }
 
   renderFilteredPosts(filter);
