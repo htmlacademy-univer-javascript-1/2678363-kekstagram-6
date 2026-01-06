@@ -26,8 +26,7 @@ const createPicture = (pictureData) => {
 const renderPictures = (posts) => {
   const picturesContainer = document.querySelector('.pictures');
 
-  const existingPictures = picturesContainer.querySelectorAll('.picture');
-  existingPictures.forEach((picture) => picture.remove());
+  picturesContainer.querySelectorAll('.picture').forEach((el) => el.remove());
 
   const fragment = new DocumentFragment();
   posts.forEach((pictureData) => {
@@ -35,12 +34,7 @@ const renderPictures = (posts) => {
     fragment.appendChild(pictureItem);
   });
 
-  const imgUploadSection = picturesContainer.querySelector('.img-upload');
-  if (imgUploadSection) {
-    picturesContainer.insertBefore(fragment, imgUploadSection);
-  } else {
-    picturesContainer.appendChild(fragment);
-  }
+  picturesContainer.appendChild(fragment);
 };
 
 export { renderPictures };
