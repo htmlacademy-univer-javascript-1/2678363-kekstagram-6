@@ -138,27 +138,65 @@ const toggleForm = (isShown) => {
   }
 };
 
+const isValidImageFile = (file) => {
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  return file && validTypes.includes(file.type);
+};
+
 uploadFile.addEventListener('change', (evt) => {
   const file = evt.target.files[0];
-  if (file) {
-    if (currentImageURL) {
-      URL.revokeObjectURL(currentImageURL);
-    }
-    currentImageURL = URL.createObjectURL(file);
-    previewImg.src = currentImageURL;
 
-    if (!scaleModule) {
-      scaleModule = initializeImageScale(previewImg, scaleValueInput);
-    }
-    if (!effectsModule) {
-      effectsModule = initializeImageEffects(previewImg);
-    }
+  if (!isValidImageFile(file)) {
+    const errorTemplate = document.querySelector('#error');
+    const errorElement = errorTemplate.content.cloneNode(true).children[0];
+    const errorInner = errorElement.querySelector('.error__inner');
+    const errorButton = errorElement.querySelector('.error__button');
 
-    scaleModule.resetScale();
-    effectsModule.resetEffects();
+    const removeError = () => {
+      errorElement.remove();
+    };
 
-    toggleForm(true);
+    const onEscapeKeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        removeError();
+      }
+    };
+
+    const onOverlayClick = (e) => {
+      if (!errorInner.contains(e.target)) {
+        removeError();
+      }
+    };
+
+    errorButton.addEventListener('click', removeError);
+    document.addEventListener('keydown', onEscapeKeydown);
+    document.addEventListener('click', onOverlayClick);
+
+    document.body.appendChild(errorElement);
+
+    uploadFile.value = '';
+
+    return;
   }
+
+  if (currentImageURL) {
+    URL.revokeObjectURL(currentImageURL);
+  }
+  currentImageURL = URL.createObjectURL(file);
+  previewImg.src = currentImageURL;
+
+  if (!scaleModule) {
+    scaleModule = initializeImageScale(previewImg, scaleValueInput);
+  }
+  if (!effectsModule) {
+    effectsModule = initializeImageEffects(previewImg);
+  }
+
+  scaleModule.resetScale();
+  effectsModule.resetEffects();
+
+  toggleForm(true);
 });
 
 closeButton.addEventListener('click', () => {
