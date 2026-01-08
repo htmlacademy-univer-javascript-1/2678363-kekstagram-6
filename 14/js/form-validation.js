@@ -1,7 +1,5 @@
-import { MAX_HASHTAGS_COUNT, MAX_COMMENT_LENGTH, REGEXP } from './data.js';
+import { MAX_HASHTAGS_COUNT, MAX_COMMENT_LENGTH, REGEXP, VALID_TYPES } from './data.js';
 import { sendPosts } from './api.js';
-import { initializeImageScale } from './image-scale.js';
-import { initializeImageEffects } from './image-effects.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFile = document.querySelector('#upload-file');
@@ -11,11 +9,8 @@ const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
 const submitButton = uploadForm.querySelector('#upload-submit');
 const previewImg = uploadOverlay.querySelector('.img-upload__preview img');
-const scaleValueInput = uploadOverlay.querySelector('.scale__control--value');
 
 let isFormOpen = false;
-let scaleModule;
-let effectsModule;
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -105,14 +100,12 @@ const resetForm = () => {
     currentImageURL = null;
   }
 
-  if (scaleModule) {
-    scaleModule.resetScale();
-  }
-  if (effectsModule) {
-    effectsModule.resetEffects();
-  }
-
   previewImg.src = 'img/upload-default-image.jpg';
+
+  const effectPreviews = document.querySelectorAll('.effects__preview');
+  effectPreviews.forEach((preview) => {
+    preview.style.backgroundImage = '';
+  });
 
   const originalEffectRadio = uploadOverlay.querySelector('#effect-none');
   if (originalEffectRadio) {
@@ -138,10 +131,7 @@ const toggleForm = (isShown) => {
   }
 };
 
-const isValidImageFile = (file) => {
-  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-  return file && validTypes.includes(file.type);
-};
+const isValidImageFile = (file) => file && VALID_TYPES.includes(file.type);
 
 uploadFile.addEventListener('change', (evt) => {
   const file = evt.target.files[0];
@@ -180,21 +170,19 @@ uploadFile.addEventListener('change', (evt) => {
     return;
   }
 
+  const updateEffectPreviews = (imageURL) => {
+    const effectPreviews = document.querySelectorAll('.effects__preview');
+    effectPreviews.forEach((preview) => {
+      preview.style.backgroundImage = `url(${imageURL})`;
+    });
+  };
+
   if (currentImageURL) {
     URL.revokeObjectURL(currentImageURL);
   }
   currentImageURL = URL.createObjectURL(file);
   previewImg.src = currentImageURL;
-
-  if (!scaleModule) {
-    scaleModule = initializeImageScale(previewImg, scaleValueInput);
-  }
-  if (!effectsModule) {
-    effectsModule = initializeImageEffects(previewImg);
-  }
-
-  scaleModule.resetScale();
-  effectsModule.resetEffects();
+  updateEffectPreviews(currentImageURL);
 
   toggleForm(true);
 });
